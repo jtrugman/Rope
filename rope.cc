@@ -7,6 +7,13 @@ public:
     Rope() {}
     Rope(const char str[]) {}
     Rope(const char str[], int len) {}
+    void insert(const Cursor& c, const char text[], int len) {}
+    void remove(Range r) {}
+    void replace(Range r, const char text, int len) {}
+    int length () {} // returns size of buffer
+    Cursor begin() const;
+    Cursor end() const;
+    Cursor get(int i) const {} // returns Cursor requested
 
 };
 
