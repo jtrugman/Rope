@@ -1,6 +1,11 @@
+/*
+Authors: Justin Trugman, David Lehman, Kirk Vasilas
+
+Rope Project: We are using the Rope data structure in order to create an ultra high performance text editior
+*/
 using namespace std;
 
-class Rope {
+class Rope {   // Rope data structure
 private:
 
 public:
@@ -17,14 +22,14 @@ public:
 
 };
 
-class Cursor {
+class Cursor {  // Determines spot to insert, select
 public:
     Cursor() {}
     Cursor(int offset) {} 
     Cursor(const Cursor& c, int offset) {}
 };
 
-class Range {
+class Range {   // Range of selection 
 private:
     Cursor start, end;
 public:
@@ -33,6 +38,6 @@ public:
 
 };
 
-class Window {
+class Window {  // window of text a user is viewing and able to edit
 
 };
