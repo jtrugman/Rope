@@ -1,4 +1,5 @@
 #include <iostream>
+#include <string> // delete after converting substring to split
 using namespace std;
 class Rope {   // Rope data structure
 private:
@@ -48,6 +49,43 @@ public:
     }
 
 
+    string substring(int start, int end){
+        string str = "";
+        bool found = false;
+        Node *temp = root;
+        if (end > temp->weight) {
+            found = true;
+            end -= temp->weight;
+            if (start > temp->weight) {
+                start -= temp->weight;
+                str = temp->right->data[substring(start, end)];
+                return str;
+            } else
+                str = temp->right->data[substring(0, end)];            
+        }        
+        if (!found){
+            while (end <= temp->weight)
+                temp = temp->left;
+            end -= temp->weight;
+            if (start >= temp->weight){
+                start -= temp->weight;
+                str = temp->right->data[substring(start, end)] + str;
+                return str;
+            }
+            str = temp->right->data[substring(0, end)];            
+        }    
+        temp = temp->left;
+        while (start < temp->weight){
+            str = temp->right->data + str;
+            temp = temp->left;
+        }
+        start -= temp->weight;
+        str = temp->right->data[substring(start, end) + str];    
+ 
+        return str;        
+    }
+    
+
     char index(int i) { 
         Node *temp = root;
         if (i > temp->weight) {
@@ -78,6 +116,7 @@ public:
         }
     }
 
+
     #if 0
     void insert(int index, char *val) {
         split(index);
@@ -86,11 +125,7 @@ public:
     }
     #endif
 
-    // void split(int i) {
-    //     if (i < weight) {
-
-    //     }
-    // }
+    
 
     // void insert(const Cursor& c, const char text[], int len) {}
     // void remove(Range r) {}
@@ -122,5 +157,7 @@ int main() {
     
     a.printRope();
     cout <<'\n';
+
+    a.substring(2,4);
 
 }
