@@ -21,17 +21,6 @@ public:
     Rope(const char str[]) {}
     Rope(const char str[], int len) {}
 
-    /*
-        Returns value at index i 
-    */
-    char index(const RopeNode& node, int i) {   // like cursor???
-        if (node.weight <= i) {
-            return index(node.right, i - node.weight);
-        } else if (node.left != nullptr) {
-            return index(node.left, i);
-        }
-        return node.data[i];
-    }
 
 
     void insert(const Cursor& c, const char text[], int len) {}
