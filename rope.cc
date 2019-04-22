@@ -24,7 +24,7 @@ public:
         root = new Node();
     }
 
-    void concat(char *str) {
+    void concat(char *str) {    // concats string and rope
         Node *temp = new Node(str);
         Node *newRoot = new Node();
         newRoot->left = root;
@@ -36,7 +36,7 @@ public:
         root = newRoot;   
     }
 
-    void concatRope(Rope r1, Rope r2){
+    void concatRope(const Rope& r1, const Rope& r2){ // concats 2 ropes
         Node *newRoot = new Node();
         newRoot->left = r1.root;
         newRoot->right = r2.root;
@@ -44,8 +44,7 @@ public:
         if (newRoot->left->right != nullptr){
             newRoot->weight += newRoot->left->right->weight;
         }
-        r1.root = newRoot;
-        r2.root = newRoot;
+        root = newRoot;
     }
 
 
@@ -62,20 +61,30 @@ public:
         return temp->right->data[i];
     }
 
+
     void printRope() {
-        printRopeNode(root);
+        printRope(root);
         cout << '\n';
     }
 
-    void printRopeNode(Node *node) {
+    void printRope(Node *node) {
+        // cout << "Node here. \n";
         if (node != nullptr) {
-            printRopeNode(node->left);
+            printRope(node->left);
             if (node->data != nullptr){
                 cout << node->data;
             }
-            printRopeNode(node->right);
+            printRope(node->right);
         }
     }
+
+    #if 0
+    void insert(int index, char *val) {
+        split(index);
+        r2.concat(val);
+        concatRope(r1, r2);
+    }
+    #endif
 
     // void split(int i) {
     //     if (i < weight) {
@@ -100,7 +109,18 @@ int main() {
     a.concat("hello");
     a.printRope();
     b.concat("Goodbye");
-    b.printRope();
-    c.concatRope(a,b);
-    c.printRope();
+    // b.printRope();
+    c.concat("working");
+    // c.printRope();
+    cout << '\n';
+
+    a.concatRope(a,b);
+    cout <<'\n';
+
+    a.printRope();
+    a.concatRope(a,c);
+    
+    a.printRope();
+    cout <<'\n';
+
 }
