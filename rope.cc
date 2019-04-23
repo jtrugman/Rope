@@ -1,7 +1,12 @@
+/*
+Questions to Ask Professor:
+1. Split function --> Very confused on how it works
+2. Cursor Inheritance --> How do I get the returnValByIndex function working
+*/
+
 #include <iostream>
-#include <string> // delete after converting substring to split
 using namespace std;
-class Rope {   // Rope data structure
+class Rope {   
 private:
 
     class Node {
@@ -13,13 +18,14 @@ private:
         Node() : data(nullptr), weight(0), left(nullptr), right(nullptr){}
     };
 
+
+
     Node* root;
 
 public:
-    Rope() : root(new Node()) {}
 
-    // Rope(const char str[]) {}
-    // Rope(const char str[], int len) {}
+    
+    Rope() : root(new Node()) {}
 
     void makeEmpty () {
         root = new Node();
@@ -37,66 +43,15 @@ public:
         root = newRoot;   
     }
 
-    void concatRope(const Rope& r1, const Rope& r2){ // concats 2 ropes
+    void concatRope(const Rope& r2){ // concats 2 ropes
         Node *newRoot = new Node();
-        newRoot->left = r1.root;
+        newRoot->left = root;
         newRoot->right = r2.root;
         newRoot->weight = newRoot->left->weight;
         if (newRoot->left->right != nullptr){
             newRoot->weight += newRoot->left->right->weight;
         }
         root = newRoot;
-    }
-
-
-    string substring(int start, int end){
-        string str = "";
-        bool found = false;
-        Node *temp = root;
-        if (end > temp->weight) {
-            found = true;
-            end -= temp->weight;
-            if (start > temp->weight) {
-                start -= temp->weight;
-                str = temp->right->data[substring(start, end)];
-                return str;
-            } else
-                str = temp->right->data[substring(0, end)];            
-        }        
-        if (!found){
-            while (end <= temp->weight)
-                temp = temp->left;
-            end -= temp->weight;
-            if (start >= temp->weight){
-                start -= temp->weight;
-                str = temp->right->data[substring(start, end)] + str;
-                return str;
-            }
-            str = temp->right->data[substring(0, end)];            
-        }    
-        temp = temp->left;
-        while (start < temp->weight){
-            str = temp->right->data + str;
-            temp = temp->left;
-        }
-        start -= temp->weight;
-        str = temp->right->data[substring(start, end) + str];    
- 
-        return str;        
-    }
-    
-
-    char index(int i) { 
-        Node *temp = root;
-        if (i > temp->weight) {
-            i -= temp->weight;
-            return temp->right->data[i];
-        }
-        while (i < temp->weight) {
-            temp = temp->left;
-        }
-        i -= temp->weight;
-        return temp->right->data[i];
     }
 
 
@@ -116,26 +71,59 @@ public:
         }
     }
 
+    int length () {
+        return root->weight;
+    }
+
 
     #if 0
-    void insert(int index, char *val) {
-        split(index);
-        r2.concat(val);
-        concatRope(r1, r2);
+    void insert(const Cursor& c, char *val) {
+        Rope temp = split(c.index);
+        concat(val);
+        concatRope(temp); // r1 is the r1.insert(Cursor, value)
+    }
+
+    void deleteItem(const Cursor& c) {
+        r2 = split(index);
+        r3 = split(index-1);
+        concatRope(r2); // r1.ConcatRope(r2);
+        r3.makeEmpty();
     }
     #endif
 
     
 
-    // void insert(const Cursor& c, const char text[], int len) {}
     // void remove(Range r) {}
     // void replace(Range r, const char text, int len) {}
-    // int length () {} // returns size of buffer
-    // Cursor begin() const;
-    // Cursor end() const;
-    // Cursor get(int i) const {} // returns Cursor requested
 
 };
+
+#if 0
+class Cursor : public Rope { // Confused on inheritance of value
+    private:
+        int index;
+        char val;
+        Rope* r;
+
+        char returnValByIndex(const Rope& r, int i) { 
+            Node *temp = r.root;
+            if (i > temp->weight) {
+                i -= temp->weight;
+                return temp->right->data[i];
+            }
+            while (i < temp->weight) {
+                temp = temp->left;
+            }
+            i -= temp->weight;
+            return temp->right->data[i];
+        }
+    public:
+        Cursor(int index) : index(index), val(returnValByIndex(r, index)) {}
+        void printCursor() {
+            cout << "index: " << index << '\t' << "Value: " << val << '\n';
+        }
+    };
+#endif
 
 int main() {
     Rope a;
@@ -144,20 +132,18 @@ int main() {
     a.concat("hello");
     a.printRope();
     b.concat("Goodbye");
-    // b.printRope();
+    b.printRope();
     c.concat("working");
-    // c.printRope();
+    c.printRope();
     cout << '\n';
-
-    a.concatRope(a,b);
     cout <<'\n';
 
+    a.concatRope(b);
     a.printRope();
-    a.concatRope(a,c);
+    a.concatRope(c);
     
     a.printRope();
     cout <<'\n';
 
-    a.substring(2,4);
 
 }
