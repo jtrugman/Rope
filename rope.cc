@@ -93,8 +93,8 @@ public:
 
     
 
-    // void remove(Range r) {}
-    // void replace(Range r, const char text, int len) {}
+    // void remove(Range r) {} // KC
+    // void replace(Range r, const char text, int len) {} //KC
 
 };
 
