@@ -1,7 +1,6 @@
 /*
-Questions to Ask Professor:
+Questions to Ask Professor Kruger:
 1. Split function --> Very confused on how it works
-2. Cursor Inheritance --> How do I get the returnValByIndex function working
 */
 
 #include <iostream>
@@ -77,6 +76,11 @@ public:
 
 
     #if 0
+
+    Rope split(int index) {
+
+    }
+
     void insert(const Cursor& c, char *val) {
         Rope temp = split(c.index);
         concat(val);
