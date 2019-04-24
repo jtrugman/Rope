@@ -84,8 +84,8 @@ public:
     }
 
     void deleteItem(const Cursor& c) {
-        r2 = split(index);
-        r3 = split(index-1);
+        r2 = split(c.index);
+        r3 = split(c.index-1);
         concatRope(r2); // r1.ConcatRope(r2);
         r3.makeEmpty();
     }
@@ -98,32 +98,14 @@ public:
 
 };
 
-#if 0
-class Cursor : public Rope { // Confused on inheritance of value
+class Cursor { // Confused on inheritance of value
     private:
         int index;
-        char val;
-        Rope* r;
-
-        char returnValByIndex(const Rope& r, int i) { 
-            Node *temp = r.root;
-            if (i > temp->weight) {
-                i -= temp->weight;
-                return temp->right->data[i];
-            }
-            while (i < temp->weight) {
-                temp = temp->left;
-            }
-            i -= temp->weight;
-            return temp->right->data[i];
-        }
+       
     public:
-        Cursor(int index) : index(index), val(returnValByIndex(r, index)) {}
-        void printCursor() {
-            cout << "index: " << index << '\t' << "Value: " << val << '\n';
-        }
-    };
-#endif
+        Cursor(int index) : index(index){}
+   
+};
 
 int main() {
     Rope a;
