@@ -77,7 +77,7 @@ public:
 
     #if 0
 
-    Rope split(int index) {
+    Rope split(int index) { // splits orig rope and returns the second half of the rope
 
     }
 
@@ -102,7 +102,16 @@ public:
 
 };
 
-class Cursor { // Confused on inheritance of value
+// class data with list of observers 
+// method of i changed 
+// publish and subscribe
+// subscribe
+// unsubscribe
+// changed
+// node is data
+// window and range is observers
+
+class Cursor { // publish, subscribe datamodel for node --> model view controller
     private:
         int index;
        
