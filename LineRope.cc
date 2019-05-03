@@ -24,6 +24,8 @@ class LineRope {
 
 	class Node {
 	public:
+		//TODO: vector<Iterator> notifyUs;  // data-observer to notify
+		//TODO: uint32_t size;
 		bool leaf;              // if true then the children are char*
 		Node* parent;
 		void* child[capacity];  // either char* or Node*
@@ -85,8 +87,8 @@ class LineRope {
 					used = 2;
 					return;
 				}
-
-				child[used++] = allocLine(s, len);
+        //TODO: go to next child if there is one, or add one
+				//Wrong:				child[used++] = allocLine(s, len);
 				return;
 			}
 			parent->addEnd(s, len);
@@ -128,6 +130,7 @@ public:
 	LineRope() : root(false, nullptr), // start with the root is a leaf node?
 							 size(0)
 	{
+		root.child[0] = new Node(true, &root);
 	}
   void addEnd(const char s[], uint32_t len) {
 		root.addEnd(s, len);
@@ -135,6 +138,8 @@ public:
 	void addEnd(const string& s) {
 		addEnd(s.c_str(), s.length());
 	}
+
+	
 	friend ostream& operator <<(ostream& s, const LineRope& r) {
 		for (int i = 0; i < r.root.used; i++) {
 			s << *(Node*)r.root.child[i];
@@ -143,10 +148,24 @@ public:
 	}
 	class Iterator {
 	private:
-		LineRope* rope;
+		Node* current;
+		uint32_t line; // line within the node
+		uint32_t offset; // within the string of the line		
 	public:
-		Iterator(LineRope& r) : rope(&r) {}
+		Iterator(LineRope& r) {
+			Node* p;
+			for (p = &r.root; p->leaf == false; p = (Node*)p->child[0])
+				;
+			current = p; // current points to first leaf node
+			line = 0; // first line in the node
+			offset = 0; // first character in the line
+		}
+		char operator [](int delta);
 	};
+	void insert(const Iterator& i, const char s[], uint32_t len);
+	void remove(const Iterator& i, uint32_t len);
+	//	void insert(const Iterator& i, LineRope& r);
+	//TODO:	Iterator find(const char s[], uint32_t len);
 };
 
 int main() {
