@@ -22,6 +22,16 @@ class LineRope {
 	// 32-bit would be smaller, and we could use a high-performance memory allocator to allocate
 	// strings of same size into pools.
 
+	class RelString {
+	public:
+		uint32_t len; // length of the string (up to 4Gb per line, overkill)
+	private:
+		uint32_t offset; // offset relative to base block
+	public:
+		RelString(const char* baseptr, const char* s, uint32_t len) : len(len), offset(s - baseptr) {}
+		const char* relTo(const char* baseptr) const { return baseptr + offset; }
+	};
+	
 	class Node {
 	public:
 		//TODO: vector<Iterator> notifyUs;  // data-observer to notify
