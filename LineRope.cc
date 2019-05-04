@@ -42,6 +42,8 @@ class LineRope {
 		uint32_t used;          // how many of the above child[] array is used
 
 		Node(bool isLeaf, Node* parent) : leaf(isLeaf), parent(parent), used(0) {
+			for (int i = 0; i < capacity; i++)
+				child[i] = nullptr; // inefficient, but for now clean up to make it easier to see where the children are
 		}
 
 		Node(Node* parent, const char s[], uint32_t len) : leaf(true), parent(parent), used(1) {
@@ -49,7 +51,6 @@ class LineRope {
 			memcpy(child[0], s, len);
 		}
 		
-
 		~Node() {
 			if (leaf)
 				for (int i = 0; i < used; i++)
@@ -97,8 +98,15 @@ class LineRope {
 					used = 2;
 					return;
 				}
-        //TODO: go to next child if there is one, or add one
-				//Wrong:				child[used++] = allocLine(s, len);
+				if (used > 0) {
+					Node* n = (Node*)child[used-1]; // get the last child
+					if (n->used < capacity)
+						n->addEnd(s, len);
+					else
+						child[used++] = new Node(this, s, len);
+					return;
+				}
+				child[used++] = new Node(this, s, len); // create the first child and increase used
 				return;
 			}
 			parent->addEnd(s, len);
@@ -178,13 +186,77 @@ public:
 	//TODO:	Iterator find(const char s[], uint32_t len);
 };
 
-int main() {
+/*
+ benchmark of how fast it is to append n strings test0 test1 test2...
+ to the end of a LineRope<4>
+*/
+void appendTest4(int n) {
 	LineRope<4> rope;
-
-	const int n = 20;
 	for (int i = 0; i < n; i++) {
 		string s = "test" + to_string(i);
 		rope.addEnd(s);
 	}
-	//	cout << rope << '\n';
+}
+
+/*
+ benchmark of how fast it is to append n strings test0 test1 test2...
+ to the end of a LineRope<16>
+*/
+void appendTest16(int n) {
+	LineRope<16> rope;
+	for (int i = 0; i < n; i++) {
+		string s = "test" + to_string(i);
+		rope.addEnd(s);
+	}
+}
+
+/*
+ benchmark of how fast it is to append n strings test0 test1 test2...
+ to the end of a LineRope<16>
+ but this time without the additional overhead of string objects.
+ This one reuses an old-style c string with no memory allocation
+*/
+void appendTest16b(int n) {
+	LineRope<16> rope;
+	char buf[256] = "test";
+	for (int i = 0; i < n; i++) {
+		int len = sprintf(buf+4, "%d", i); // TODO: this should be more efficient as well
+		rope.addEnd(buf, 4+len);
+	}
+}
+
+#if 0
+void insertTest(int n) {
+	LineRope<4> rope;
+	LineRope<4>::Iterator i = rope.begin(); // get iterator to beginning of rope
+	for (int i = 0; i < n; i++) {
+		string s = "test" + to_string(i);
+		i.insert(s); // insert at the beginning of the rope
+	}
+}
+#endif
+
+void testAddEnd4() {
+	LineRope<4> rope;	
+	for (int i = 0; i < 20; i++) {
+		string s = "test" + to_string(i);
+		rope.addEnd(s);
+	}
+	cout << rope << '\n';
+}
+typedef void (*FuncIntParam)(int n);
+
+void bench(const char msg[], FuncIntParam f, int n) {
+  clock_t t0 = clock();
+	f(n);
+	clock_t t1 = clock();
+	cout << msg << '\t' << n << '\t' <<  (t1-t0) << '\n';
+}
+
+int main() {
+	for (int n = 1000000; n < 10000000; n *= 2) {
+		bench("appendTest4", appendTest4, n);
+		bench("appendTest16", appendTest16, n);
+		bench("appendTest16b", appendTest16b, n);
+	}
 }
