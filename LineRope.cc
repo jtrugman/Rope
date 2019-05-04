@@ -244,6 +244,15 @@ void testAddEnd4() {
 	}
 	cout << rope << '\n';
 }
+
+void testAddEnd16() {
+	LineRope<16> rope;	
+	for (int i = 0; i < 100; i++) {
+		string s = "test" + to_string(i);
+		rope.addEnd(s);
+	}
+	cout << rope << '\n';
+}
 typedef void (*FuncIntParam)(int n);
 
 void bench(const char msg[], FuncIntParam f, int n) {
@@ -254,9 +263,15 @@ void bench(const char msg[], FuncIntParam f, int n) {
 }
 
 int main() {
+	//testAddEnd4(); // just check the basics, adding 20 strings into a LineRope<4>
+	testAddEnd16(); // just check the basics, adding 100 strings into a LineRope<16>
+
+#if 0
 	for (int n = 1000000; n < 10000000; n *= 2) {
 		bench("appendTest4", appendTest4, n);
 		bench("appendTest16", appendTest16, n);
 		bench("appendTest16b", appendTest16b, n);
 	}
+#endif
+	bench("appendTest16b", appendTest16b, 10000000); // 10 million
 }
