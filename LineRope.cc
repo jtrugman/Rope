@@ -1,5 +1,6 @@
 #include <memory.h>
 #include <iostream>
+#include <fstream>
 
 using namespace std;
 
@@ -112,10 +113,10 @@ class LineRope {
 			parent->addEnd(s, len);
 		}
 
-		friend ostream& operator<<(ostream& s, const Node& n) {
+		friend ostream& operator <<(ostream& s, const Node& n) {
 			if (n.leaf) {
 				for (int i = 0; i < n.used; i++)
-					s << (const char*)n.child[i];
+					s << (const char*)n.child[i] << '\n';
 			} else {
 				for (int i = 0; i < n.used; i++)
 					s << *(Node*)n.child[i];
@@ -184,7 +185,30 @@ public:
 	void remove(const Iterator& i, uint32_t len);
 	//	void insert(const Iterator& i, LineRope& r);
 	//TODO:	Iterator find(const char s[], uint32_t len);
+
+	void load(const char filename[]);
+	void save(const char filename[]);
+	Iterator search(const char target[], uint32_t len);
+	bool replace(Iterator& start, uint32_t size, const char s[], uint32_t len);
 };
+
+template<int capacity>
+void LineRope<capacity>::load(const char filename[]) {
+	ifstream f(filename);
+	const int SIZE = 4096;
+	char buf[SIZE];
+	while (f.getline(buf, SIZE), !f.eof()) {
+		int len = strlen(buf);
+		root.addEnd(buf, len);
+	}
+}
+
+template<int capacity>
+void LineRope<capacity>::save(const char filename[]) {
+	ofstream f(filename);
+	f << root;
+}
+
 
 /*
  benchmark of how fast it is to append n strings test0 test1 test2...
@@ -262,10 +286,25 @@ void bench(const char msg[], FuncIntParam f, int n) {
 	cout << msg << '\t' << n << '\t' <<  (t1-t0) << '\n';
 }
 
+void testLoadSmall() {
+	LineRope<16> rope;	
+	rope.load("LineRope.cc");
+	cout << rope << '\n';
+}
+
+void testEditSmall() {
+	LineRope<16> rope;	
+  rope.load("test.txt");              // load in one file...
+	rope.addEnd("testing testing 123"); // add a line
+	//TODO: test all the insert and delete operations
+	rope.save("test2.txt");             // then save out
+}
+
 int main() {
 	//testAddEnd4(); // just check the basics, adding 20 strings into a LineRope<4>
 	testAddEnd16(); // just check the basics, adding 100 strings into a LineRope<16>
-
+	testLoadSmall();
+	testEditSmall();
 #if 0
 	for (int n = 1000000; n < 10000000; n *= 2) {
 		bench("appendTest4", appendTest4, n);
