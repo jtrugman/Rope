@@ -181,8 +181,21 @@ public:
 		}
 		char operator [](int delta);
 	};
-	void insert(const Iterator& i, const char s[], uint32_t len);
-	void remove(const Iterator& i, uint32_t len);
+	void insert(const Iterator& i, const char s[], uint32_t len) {
+		// Might not work fully
+		root.capacity+= len;
+		char [root.capacity] = s[];
+		for (int n = 0; n < root.capacity + len; n++) {
+			char temp = s[n++];
+			root.child[n] = temp;
+		}
+	}
+
+	void remove(const Iterator& i, uint32_t len) {
+		for (int n = i.offset; n < i.line; n++){
+			root.child[n] = root.child[n+1];
+		}
+	}
 	//	void insert(const Iterator& i, LineRope& r);
 	//TODO:	Iterator find(const char s[], uint32_t len);
 
