@@ -18,7 +18,6 @@ private:
     };
 
 
-
     Node* root;
 
 public:
@@ -75,25 +74,50 @@ public:
     }
 
 
-    #if 0
+    char returnValByIndex(int i) { 
+        Node *temp = root;
+        if (i > temp->weight) {
+            i -= temp->weight;
+            return temp->right->data[i];
+        }
+        while (i < temp->weight) {
+            temp = temp->left;
+        }
+        i -= temp->weight;
+        return temp->right->data[i];
+    }
 
-    Rope split(int index) { // splits orig rope and returns the second half of the rope
+    //#if 0
+
+    void findSplit(int n) {
+        Node *temp = root;
+        int sum = temp->weight;
+        int base = 0;
+        if (temp->weight > n){
+            base = temp->weight;
+            temp = temp->left;
+            sum += temp->weight;
+        } else if(temp->weight < n) {
+            temp = temp-> right;
+        } 
+    }
+    Rope split(int n) { // splits orig rope and returns the second half of the rope
 
     }
 
-    void insert(const Cursor& c, char *val) {
-        Rope temp = split(c.index);
+    void insert(int index, char *val) {
+        Rope temp = split(index);
         concat(val);
         concatRope(temp); // r1 is the r1.insert(Cursor, value)
     }
 
-    void deleteItem(const Cursor& c) {
-        r2 = split(c.index);
-        r3 = split(c.index-1);
+    void deleteItem(int index) {
+        Rope r2 = split(index);
+        Rope r3 = split(index-1);
         concatRope(r2); // r1.ConcatRope(r2);
         r3.makeEmpty();
     }
-    #endif
+   // #endif
 
     
 
@@ -111,6 +135,7 @@ public:
 // node is data
 // window and range is observers
 
+# if 0
 class Cursor { // publish, subscribe datamodel for node --> model view controller
     private:
         int index;
@@ -119,6 +144,7 @@ class Cursor { // publish, subscribe datamodel for node --> model view controlle
         Cursor(int index) : index(index){}
    
 };
+# endif
 
 int main() {
     Rope a;
