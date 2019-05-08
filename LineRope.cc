@@ -1,4 +1,4 @@
-#include <memory.h>
+q#include <memory.h>
 #include <iostream>
 #include <fstream>
 
@@ -79,7 +79,6 @@ class LineRope {
 			memcpy(line, s, len);
 			return line;
 		}
-
 		
 		void addEnd(const char s[], uint32_t len) {
 			if (leaf) {
@@ -182,9 +181,9 @@ public:
 		char operator [](int delta);
 	};
 	void insert(const Iterator& i, const char s[], uint32_t len) {
-		// Might not work fully
+		// TODO: Might not work fully
 		root.capacity+= len;
-		char [root.capacity] = s[];
+		char [root.capacity] = s[]; //TODO: this may compile, but it's wrong
 		for (int n = 0; n < root.capacity + len; n++) {
 			char temp = s[n++];
 			root.child[n] = temp;
@@ -192,6 +191,9 @@ public:
 	}
 
 	void remove(const Iterator& i, uint32_t len) {
+		//TODO: memory leak!
+		//TODO: if i.line > capacity, remove the whole thing...
+		//TODO: if i.line = 5, for example, don't remove one at a time!
 		for (int n = i.offset; n < i.line; n++){
 			root.child[n] = root.child[n+1];
 		}
